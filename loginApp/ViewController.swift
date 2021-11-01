@@ -12,8 +12,18 @@ class ViewController: UIViewController{
     @IBOutlet weak var userPaswordTF: UITextField!
     @IBOutlet weak var userNameTF: UITextField!
     
-    let login = "User"
-    let password = "Password"
+    private let login = "User"
+    private let password = "password"
+    
+    override func viewDidLoad() {
+        userNameTF.delegate = self
+        userNameTF.returnKeyType = .next
+        userPaswordTF.delegate = self
+        userPaswordTF.returnKeyType = .done
+        userPaswordTF.isEnabled = true
+        userPaswordTF.enablesReturnKeyAutomatically = true
+        userNameTF.autocapitalizationType = .words
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         guard let secondViewController = segue.destination as? SecondViewController else {return}
@@ -21,13 +31,12 @@ class ViewController: UIViewController{
     }
     
     @IBAction func loginAction() {
-        if userNameTF.text == "" || userPaswordTF.text == ""{
-            userNameTF.text = ""
-            alert(title: "Invalid login or password", message: "Please, enter correct login or password")
-        }
         if userNameTF.text != login || userPaswordTF.text != password {
-            userPaswordTF.text = ""
-            alert(title: "Invalid login or password", message: "Please, enter correct login or password")
+            alert(
+                title: "Invalid login or password",
+                message: "Please, enter correct login and password",
+                textField: userPaswordTF
+            )
         }
     }
     
@@ -51,12 +60,14 @@ extension ViewController {
         })
         present(alert, animated: true, completion: nil)
     }
-    
-    
-    
 }
 
 extension ViewController: UITextFieldDelegate {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+            super.touchesBegan(touches, with: event)
+            view.endEditing(true)
+        }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == userNameTF {
             userPaswordTF.becomeFirstResponder()
@@ -67,9 +78,5 @@ extension ViewController: UITextFieldDelegate {
         return true
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-            super .touchesBegan(touches, with: event)
-            super.touchesBegan(touches, with: event)
-            view.endEditing(true)
-    }
+    
 }
