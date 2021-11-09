@@ -9,6 +9,9 @@ import UIKit
 
 class ViewController: UIViewController{
     
+    private var user = User.getDataUser()
+   
+    
     @IBOutlet weak var userPaswordTF: UITextField!
     @IBOutlet weak var userNameTF: UITextField!
     
@@ -26,8 +29,19 @@ class ViewController: UIViewController{
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let secondViewController = segue.destination as? SecondViewController else {return}
-        secondViewController.getUserName = userNameTF.text
+        guard let tabBarController = segue.destination as? UITabBarController else {return}
+        guard let viewControllers = tabBarController.viewControllers else {return}
+        
+        viewControllers.forEach {
+            if let secondVC = $0 as? SecondViewController{
+                secondVC.user = user
+            } else if let navigationVC = $0 as? UINavigationController{
+                if let thirdVC = navigationVC.topViewController as? ThirdViewController{
+                    thirdVC.user = user
+                }
+            }
+        }
+        
     }
     
     @IBAction func loginAction() {
